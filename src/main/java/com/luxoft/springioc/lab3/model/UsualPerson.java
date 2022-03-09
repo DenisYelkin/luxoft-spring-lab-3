@@ -1,36 +1,40 @@
 package com.luxoft.springioc.lab3.model;
 
-import java.util.List;
-
+import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
+import java.util.List;
 
-//@Component("person")
-public class UsualPerson implements Person {
-	
-	public static int createdPersons = 0; 
+@Service("person")
+public class UsualPerson implements Person, InitializingBean, DisposableBean {
 
-//    @Value("${person.id}")
+    public static int createdPersons = 0;
+
+    @Value("${person.id}")
     private int id;
 
+    @Value("${person.name}")
     private String name;
 
     @Autowired
     private Country country;
 
+    @Value("${person.age}")
     private int age;
 
+    @Value("${person.height}")
     private float height;
 
+    @Value("${person.isProgrammer}")
     private boolean isProgrammer;
 
+    @Value("${person.isRegistered}")
     private boolean isRegistered;
 
-	private List<String> contacts;
+    private List<String> contacts;
 
     public void setIsProgrammer(boolean isProgrammer) {
         this.isProgrammer = isProgrammer;
@@ -70,14 +74,14 @@ public class UsualPerson implements Person {
     public void setProgrammer(boolean programmer) {
         isProgrammer = programmer;
     }
-    
-    public boolean isRegistered() {
-		return isRegistered;
-	}
 
-	public void setRegistered(boolean isRegistered) {
-		this.isRegistered = isRegistered;
-	}
+    public boolean isRegistered() {
+        return isRegistered;
+    }
+
+    public void setRegistered(boolean isRegistered) {
+        this.isRegistered = isRegistered;
+    }
 
     public List<String> getContacts() {
         return contacts;
@@ -93,6 +97,16 @@ public class UsualPerson implements Person {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        createdPersons++;
+    }
+
+    @Override
+    public void destroy() throws Exception {
+        createdPersons--;
     }
 
     public String toString() {
@@ -136,5 +150,4 @@ public class UsualPerson implements Person {
         result = 31 * result + (country != null ? country.hashCode() : 0);
         return result;
     }
-
 }
